@@ -45,4 +45,44 @@ module.exports.ProductsController = {
       });
     }
   },
+  updateProduct: async (req, res) => {
+    try {
+      const {
+        body,
+        params: { id },
+      } = req;
+      if (!body || Object.keys(body).length === 0) {
+        Response.error(res, new createError.BadRequest());
+      } else {
+        const insertedId = await ProductsService.updateProduct(id, body);
+        Response.success(res, 201, "Producto actualizado", insertedId);
+      }
+    } catch (error) {
+      debug(error);
+      Response.error(res);
+    }
+  },
+  deleteProduct:  async (req, res) => {
+    try{
+      const { params: { id}  } = req;
+      if(!id)
+      {
+        Response.error(res, new createError.BadRequest());
+      }else{
+        const result = await ProductsService.deleteProduct(id);
+        Response.success(res, 200, `Producto ${id}`, result);
+      }
+    }catch(error){
+      debug(error);
+      Response.error(res);
+    }
+  },
+  generateReport: async (req, res) => {
+    try {
+      ProductsService.generateReport("Inventario", res);
+    } catch (error) {
+      debug(error);
+      Response.error(res);
+    }
+  },
 };
